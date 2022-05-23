@@ -119,5 +119,87 @@ opencv学习路径
   + 通道的分离与合并
     + split(mat)
     + merge((ch1,ch2,...))
-+ 矩阵
-  + 基本图形的绘制
++ 基本图形的绘制
+  + 画线
+    + line(img,开始点,结束点，颜色)
+    + img: 在哪个图像上画线
+    + 开始点、结束点： 指定线的开始与结束位置
+    + 颜色、线宽、线型
+  + 画椭圆
+    + ellipse(img,中心点，长宽的一半，角度，从哪个角度开始，从哪个角度结束)
+  + 画多边形
+    + polylines(img,点集，是否闭环,颜色,.)
+  + 画文本
+    + putText(img,字符串,起始点，字体，字号)
++ 图像的运算
+  + 图像相加 add 
+  + 图像相减 subtract 
+  + 图像乘与除 multiply divide 
+  + 图像融合 addWeighted(A,alpha,B,bate,gamma)
+    + alpha 和 beta是权重 
+    + gamm 是静态权重 
+  + 图像位运算
+    + 与
+    + 或
+    + 非
+    + 异或
++ 图像的变换
+  + 图像的缩放
+    + resize(src,dst,dsize,fx,fy,interpolation)
+      + interpolation 缩放算法
+        + INNER_NEAREST: 邻近插值，速度快，效果差
+        + INNER_LINEAR: 双线性插值，院途中的4个点
+        + INNER_ CUBIC:三次插值，原图中的16个点
+        + INNER_AREA:效果最好
+  + 图像翻转
+    + flip(img,flipCode) 
+      + flipcode == 0 上下
+      + flipcode >0 左右
+      + flipcode<0 上下 + 左右 
+  + 图像旋转
+    + rotate(img,rotateCode)
+      + ROTATE_90_CLOCKWISE
+      + ROTATE_180
+      + ROTATE_90_COUNTERCLOCKWISE
+  + 图像的仿射变换(旋转，缩放，平移的总称)
+    + 仿射API
+      + warpAffine(src,M,dsize,flags,mode,value)
+      + M:变换矩阵
+      + dsize: 变换后的大小
+      + flags：与resize中的插值算法一致
+      + mode: 边界外推法标志
+      + value：填充边界的值
+    + 平移矩阵
+      + 矩阵中的每个像素由(x,y)组成
+      + 因此，其变换矩阵是2×2的矩阵
+      + 平移向量为2×1的向量，所在的平移矩阵为2×3矩阵
+      + 变换矩阵
+        + getRotationMatrix2D(center,angle,scale)
+        + center 中心点
+        + angle 角度
+        + scale 缩放比例
+    + 透视变换API
+      + warpPerspective(img,M,dsize)
+      + M 是变换矩阵
+      + dszie是目标图像大小
+      + getPersectiveTransform(src,dst)
+      + 四个点(图形的四个角)
++ 图像滤波
+  + 滤波的作用
+    + 一副图像通过滤波器得到另一幅图像
+      + 其中滤波器又称为卷积核，滤波的过程称为卷积  
+  + 卷积的基本概念
+    + 卷积核的大小
+      + 卷积核一般为奇数，如3*3 5*5 7*7
+        + 一方面是增加padding的原因
+        + 另一方面是保证锚点在中间，防止位置发生偏移的原因
+      + 卷积核的大小的影响
+        + 在深度学习中，卷积核越大
+        + 看到的信息(感受野)越多
+        + 提取的特征越好，同时计算量也就越大
+    + 锚点
+    + 边界扩充
+      + 当卷积核大于1且不进行边界扩充，输出尺寸将相应缩小
+      + 当卷积核以标准方式进行辩解扩充，则输出数据的空间尺寸将于输入相等
+    + 步长
+      
