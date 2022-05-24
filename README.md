@@ -197,9 +197,90 @@ opencv学习路径
         + 在深度学习中，卷积核越大
         + 看到的信息(感受野)越多
         + 提取的特征越好，同时计算量也就越大
-    + 锚点
+    + 锚点(中心点)
     + 边界扩充
       + 当卷积核大于1且不进行边界扩充，输出尺寸将相应缩小
-      + 当卷积核以标准方式进行辩解扩充，则输出数据的空间尺寸将于输入相等
-    + 步长
-      
+      + 当卷积核以标准方式进行边界扩充，则输出数据的空间尺寸将于输入相等
+      + 计算公式
+        + N = （W - F +2P)/S +1
+        + N 输出图像大小
+        + W 源图大小；F 卷积核大小；P 扩充尺寸
+        + S 步长大小 
+    + 步长(间隔)
+  + 低通滤波、高通滤波
+    + 低通滤波可以去除噪音或平滑图像
+    + 高通滤波可以帮助查找图像的边缘 
+  + 图像卷积
+    + filter2D(src,ddepth,kernel,anchor,delta,borderType)
+      + ddepth 位深 默认为-1
+      + kernal 卷积核
+      + anchor 锚点
+      + delta 
+      + borderType 边界类型
+  + 方盒滤波与均值滤波
+    + 方盒滤波卷积核 
+      + 参数a的作用    
+        + normalize = true, a = 1/W* H  方盒滤波 == 均值滤波 
+        + normalize = false, a = 1 
+      + boxFilter(src,depth,ksize,anchor,normalize,borderType)
+    + 均值滤波
+      + blur(src,ksize,anchor,borderType)  
+  + 高斯滤波。对高斯噪点有效果
+    + GasussianBlur(img,kernal,sigmaX,sigmaY)
+  + 中值滤波。取其中的中间值作为卷积后的结果值。对胡椒噪音效果明显
+    + medianBlur(img,ksize)
+  + 双边滤波
+    + 优点
+      + 可以保留边缘
+      + 同时可以对边缘内的区域进行平滑处理 
+    + 作用：进行美颜 
+    + API
+      + bilateralFilter(img,d,sigmaColor,sigmaSpace)
+  + 高通滤波
+    + Sobel(索贝尔)(高斯)
+      + 先向X方向求导
+      + 再向y方向求导
+      + 最终结果：|G| = |Gx| + |Gy| 
+      + Sobel(src,ddepth,dx,dy,ksize=3)
+    + Scharr(沙尔) 卷积核不可改变。只能求一个方向。
+      + 与Sobel类似，只不过是用的kernel值不同
+      + 只能求x方向或y方向的边缘
+    + Laplacian(拉普拉斯)
+      + 可以同时求两个方向的边缘
+      + 对噪音敏感，一般需要先进行去噪再调用拉普拉斯
+    + Canny
+      + 使用5×5高斯滤波消除噪声
+      + 计算图像梯度的方向（0/45/90/135）
+      + 取局部极大值
+      + Canny(img,minVal,maxVal)
++ 形态学 
+  + 基于图像形态进行处理的一些基本方法
+  + 这些处理方法基本是对二进制图像（黑白）进行处理
+  + 卷积核决定着图像处理后的效果
+  + 形态学图像处理
+    + 腐蚀与膨胀 
+    + 开运算
+    + 闭运算
+    + 顶帽
+    + 黑帽
+  + 图像的二值化
+    + 将图像的每个像素变成两种值，如0，255
+    + 全局二值化
+    + 局部二值化
+    + threshold(img,thresh,maxVal,type)
+      + img:图像，最好是灰度图。
+      + thresh:阈值
+      + maxVal: 超于阈值，替换成maxVal
+      + Thresh_binary 
+      + Thresh_binaer_inv
+      + Thresh_trunc
+      + Thresh_tozero 和 thresh_tozero_inv
+    + 自定义阈值
+      + adaptiveThreshold(img,maxVal,adaptiveMethodtype,blockSize,c)
+        + adaptiveMethod:计算阈值的方法 
+        + blockSize：邻近区域的大小
+        + C ：常量，应从计算出的平均值和加权平均值中减去
+        + APAPTIVE_THRESH_MEAN_C: 计算临近区域的平均值
+        + ADAPTIVE_THRESH_GAUSSIAN_C:高斯窗口加权平均值
+        + type： THRESH_BINARY、THRESH_BINARY_INV
+  
