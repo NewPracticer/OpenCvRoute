@@ -248,7 +248,7 @@ opencv学习路径
     + Laplacian(拉普拉斯)
       + 可以同时求两个方向的边缘
       + 对噪音敏感，一般需要先进行去噪再调用拉普拉斯
-    + Canny
+    + Canny(求边缘)
       + 使用5×5高斯滤波消除噪声
       + 计算图像梯度的方向（0/45/90/135）
       + 取局部极大值
@@ -283,4 +283,58 @@ opencv学习路径
         + APAPTIVE_THRESH_MEAN_C: 计算临近区域的平均值
         + ADAPTIVE_THRESH_GAUSSIAN_C:高斯窗口加权平均值
         + type： THRESH_BINARY、THRESH_BINARY_INV
-  
+  + 腐蚀的原理
+    + erode(img,kernel,iterations=1)
+    + 获取卷积核
+      + getStructuringElement(type,size)
+      + size值为：(3,3)、(5,5)
+      + MORPH_RECT
+      + MORPH_ELLIPSE
+      + MORPH_CROSS
+  + 膨胀
+    + dilate(img,kernel,iterations = 1)
+  + 开运算 = 腐蚀 + 膨胀 
+    + morphologyEx(img,MORPH_OPEN,kernel)
+  + 闭运算 = 膨胀 + 腐蚀
+  + 形态学梯度 (求边缘)
+    + 梯度 = 原图 - 腐蚀 
+  + 顶帽运算
+    + 顶帽 = 原图 - 开运算
+  + 黑帽运算
+    + 黑帽 = 原图 - 闭运算
+  + 开运算，先腐蚀后膨胀，去除大图形外的小图形
+  + 闭运算，先膨胀后腐蚀，去除大图行内的小图形
+  + 梯度，求图形的边缘
+  + 顶帽，原图减去开运算，得到大图形外的小图形
+  + 黑帽，原图减去闭运算，得到大图形内的小图形 
++ 图像轮廓
+  + 具有相同颜色或强度的连续点的曲线
+  + 作用
+    + 用于图形分析
+    + 物体的识别与检测
+  + 注意点
+    + 为了检测的准确性，需要对图像进行二值化或Canny操作
+    + 画轮廓时会修改输入的图像
+    + findContours(img,mode,ApproxinmationMode)
+      + 两个返回值，contours和hierarchy
+      + mode
+        + RETR_EXTERNAL = 0 表示只检测外轮廓
+        + RETR_LIST = 1 ,检测的轮廓不建立等级关系
+        + RETR_CCOMP = 2 ,每层最多两级
+        + RETR_TREE = 3，按树形存储轮廓
+      + ApproxinmationMode
+        + CHAIN_APPROX_NONE, 保存所有轮廓上的点
+        + CHAIN_APPROX_SIMPLE，只保存角点
+  + 绘制轮廓
+    + drawContours(img,contours,contourIndex,color,thickness...)
+      + coutourIdx, -1 表示绘制所有轮廓
+      + color,颜色(0,0,255)
+      + thickness,线宽 -1 是全部填充
+  + 轮廓面积
+    + contourArea(countour)
+    + contour:轮廓   
+  + 轮廓周长
+    + arcLength(curve,closed)
+    + curve：轮廓
+    + closed：是否是闭合的轮廓
+  + 
