@@ -1,19 +1,5 @@
 # OpenCvRoute
-opencv学习路径
-
-# OpenCv学习路径
-+ [入门OpenCv](https://coding.imooc.com/class/496.html)
-  + 对应案例
-    + 车辆检测、图像拼接、文字识别
-+ [深入OpenCv](https://ke.qq.com/course/456184 )
-  + 对应案例
-    + [信用卡数字识别、文档扫描ORC识别、图像拼接、停车场车位识别、答题卡识别、目标追踪、疲劳检测](https://www.bilibili.com/video/BV1PV411774y?spm_id_from=333.337.search-card.all.click)
-+ [OpenCv全流程学习](https://ke.qq.com/course/package/38162)
-  + 对应案例
-    +  刀片检测、二维码检测、人脸检测、车牌检测、行人检测、图像拼接
-+ [工业OpenCv使用](https://www.kaikeba.com/course/vip/788)
-  + 对应案例
-    + 文档扫描OCR识别、零件识别、人脸识别饰品添加、目标追踪、目标检测 
+opencv学习路径 
 
 # OpenCv能做什么
 + 目标识别
@@ -337,4 +323,95 @@ opencv学习路径
     + arcLength(curve,closed)
     + curve：轮廓
     + closed：是否是闭合的轮廓
-  + 
+  + 多边形逼近与凸包
+    + 多边形逼近
+      + approxPolyDP(curve,epsilon,closed)
+      + curve：轮廓
+      + eplison :精度
+      + closed: 是否闭合 
+    + 凸包
+      + convexHull(points,clockwise)
+      + points:轮廓
+      + clockwise:顺时针绘制
+  + 外接矩形
+    + 最小外接矩形
+      + minAreaRect(point)
+        + point 轮廓
+        + 返回值： RotateRect
+          + x,y
+          + width,height
+          + angle 
+    + 最大外接矩形
+      + boundingRect(array)
+        + array:轮廓
+        + 返回 rect
++ Opencv特征的场景
+  + 图像搜索，如以图搜图
+  + 拼图游戏
+    + 拼图方法
+      + 寻找特征
+      + 特征是唯一的
+      + 能比较的 
+      + 可追踪的
+    + 平坦部分很难找到它在原图中的位置
+    + 边缘相比平坦更好找一些，但也不能一下确定
+    + 角点可以一下就能找到其在原图的位置
+    + 特征
+      + 图像特征就是指有意义的图像区域，具有独特性，易于识别性，比如角点、斑点及高密度区
+      + 角点
+        + 灰度梯度的最大值对应的像素
+        + 在特征中最重要的是角点
+        + 两条线的交点
+        + 极值点（一阶导数最大值，但二阶导数为0）
+      + Harris角点
+        + 光滑地区，无论向哪里移动，衡量系数不变
+        + 边缘地址，垂直边缘移动时，衡量系统变化剧烈
+        + 在交点处，往哪个方向移动，衡量系统都变化剧烈
+        + blockSize ：检测窗口大小
+        + ksize：Soble的卷积核
+        + k：权重系数，经验值，一般取0.02-0.04之间
+      + Shi-Tomasi角点检测
+        + Shi-Tomasi是Harris角点检测的改进
+        + Harris角点检测算得稳定性和K有关，而K是个经验值，不好设定最佳值
+        + goodFeaturstoTrack
+          + maxCorners:角点的最大数，值为0表示无限制
+          + qualityLevel:小于1.0的正数，一般在0.01-0.1之间
+          + minDistance: 角之间最小欧式距离，忽略小于此距离的点
+          + mask ：感兴趣的区域
+          + blocksize: 检测窗口
+          + useHarrisDetector: 是否使用Harris算法
+          + k 默认是0.04
+      + SIFT
+        + 出现的原因
+          + Harris角点具有旋转不变的特性 
+          + 但缩放后，原来的角点有可能就不是角点了。
+        + 创建SIFT对象
+          + 进行检测 kp = sift.detect(img,...)
+          + 绘制关键点，drawKeyPoints(gray,kp,img)
+        + 关键点和描述子
+          + 关键点：位置、大小和方向
+          + 描述子：记录了关键点周围对其有贡献的像素点的一组向量值，其不受仿射变换，光照变换等影响
+          + 计算描述子
+            + sift.compute(img,kp)
+            + 其作用是进行特征匹配
+        + 同时计算关键点和描述子
+          + kp,des = sift.detactAndCompute(img,..)
+          + mask 指明对img中哪个区域进行计算
+      + SURF
+        + 优点：速度快
+        + SIFT：最大的问题是速度慢  
+      + ORB 
+        + ORB可以做到实时监测
+    + 特征匹配方法
+      + BF 暴力特征匹配方法
+        + 它使用第一组中的每个特征的描述子 与第二组中的所有特征描述子进行匹配
+        + 计算它们之间的差距，然后将最接近一个匹配返回
+      + FLANN 最快邻近区特征匹配方法
+      + 特征匹配步骤
+        + 创建匹配器，BFMatcher
+          + crossCheck:是否进行交叉匹配，默认为false
+        + 进行特征匹配，bf.match(des1,des2)  
+        + 绘制匹配点，cv2.drawMatches(img1,kp1,img2,kp2)
+        
+  + 图拼接，将有两张有关联的图拼接到一起
+  
