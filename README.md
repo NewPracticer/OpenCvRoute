@@ -406,12 +406,78 @@ opencv学习路径
       + BF 暴力特征匹配方法
         + 它使用第一组中的每个特征的描述子 与第二组中的所有特征描述子进行匹配
         + 计算它们之间的差距，然后将最接近一个匹配返回
-      + FLANN 最快邻近区特征匹配方法
-      + 特征匹配步骤
-        + 创建匹配器，BFMatcher
-          + crossCheck:是否进行交叉匹配，默认为false
-        + 进行特征匹配，bf.match(des1,des2)  
-        + 绘制匹配点，cv2.drawMatches(img1,kp1,img2,kp2)
-        
-  + 图拼接，将有两张有关联的图拼接到一起
+        + 特征匹配步骤
+          + 创建匹配器，BFMatcher
+            + normType: NORM_L1,NORM_L2,HAMMING1
+            + crossCheck:是否进行交叉匹配，默认为false
+          + 进行特征匹配，bf.match(des1,des2)  
+            + 参数为SIFT,SURF,OBR等算子
+          + 绘制匹配点，cv2.drawMatches(img1,kp1,img2,kp2)
+            + 搜索img,kp
+            + 匹配图img,kp
+            + match()方法返回的匹配结果
+      + FLANN 最快邻近区特征匹配方法 
+        + 在进行批量特征匹配时，Flann速度更快
+        + 由于它使用的是邻近近似值，所以精度较差
+        + 创建匹配器，FlannBasedMatcher
+          + index_params 字典：匹配算法 KDTREE。LSH
+          + search_params 字典: 指定KDTREE算法中遍历树的次数
+            + KDTREE。 trees = 5 ,search_params 50 
+          + knnMatch方法
+            + 参数为SIFT、SURF、ORB等计算的描述子
+            + k，表示取欧式距离最近的前K个关键点
+            + 返回的是匹配的结果
+          + trainIdx
+        + 进行特征匹配，flann.match/knnMatch  
+        + 绘制匹配点 cv2.drawMatcher/drawMatcherKnn
+      + 图像查找
+        + 单应性矩阵
+      + 图像合并的步骤
+        + 读文件并重置尺寸
+        + 根据特征点和计算描述子，得到单应性矩阵
+        + 图像变换     
+        + 图像拼接并输出图像
+  + 图像的分割
+    + 将前景物体从背景中分离出来
+    + 图像分割的方法
+      + 传统的图像分割方法
+        + 分水岭法。图像存在过多的极小区域而产生很多小的集水盆
+          + 标记背景
+          + 标记前景
+          + 标记未知域
+          + 进行分割
+          + API
+            + watershed(img,masker)
+            + masker,前景，背景设置不同的值用以区分它们
+        + GrabCut法
+        + MeanShift法
+        + 背景扣除
+      + 基于深度学习的图像分割方法
+  + 机器学习
+    + 人脸识别
+      + 哈尔(Haar)级联方法
+        + 创建Haar级联器
+        + 导入图片并将其灰度化
+        + 调用detectMultiScale方法进行人脸识别
+          + (img,double scaleFactor = 1.1,int minNeighbors = 3)
+      + 深度学习方法(DNN)
+        + OpenCV对DNN的支持
+          + 只能使用DNN，不能训练DNN模型
+          + 支持Tensflow/Pytorch/Caff/DarkNet
+            + 读取模型，并得到深度神经网络
+            + 读取图片/视频
+            + 将图片转成张量，送入深度神经网络
+              + blobFromImage 函数
+            + 进行分析，并得到结果 
+    + 车牌识别
+      + Haar + Tesacct 识别车牌
+      + 通过Haar 定位车牌的大体位置
+      + 对车牌进行预处理
+        + 对车牌进行二值化处理
+        + 进行形态学处理
+        + 滤波去除噪点
+        + 缩放
+      + 调用tesseract进行文字识别
+      
+      
   

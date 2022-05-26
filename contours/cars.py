@@ -26,7 +26,7 @@ def center(x, y, w, h):
     return cx, cy
 
 
-cap = cv2.VideoCapture('./video.mp4')
+cap = cv2.VideoCapture('video.mp4')
 
 bgsubmog = cv2.createBackgroundSubtractorMOG2()
 
@@ -54,12 +54,12 @@ while True:
         close = cv2.morphologyEx(dilate, cv2.MORPH_CLOSE, kernel)
         close = cv2.morphologyEx(close, cv2.MORPH_CLOSE, kernel)
 
-        cnts, h = cv2.findContours(close, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cnts,h,b = cv2.findContours(close, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         # 画一条检测线
         cv2.line(frame, (10, line_high), (1200, line_high), (255, 255, 0), 3)
 
-        for (i, c) in enumerate(cnts):
+        for (i, c) in enumerate(h):
             (x, y, w, h) = cv2.boundingRect(c)
 
             # 对车辆的宽高进行判断
@@ -82,8 +82,9 @@ while True:
 
         cv2.putText(frame, "Cars Count:" + str(carno), (500, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 5)
         cv2.imshow('video', frame)
+        # cv2.imshow('erode', close)
 
-    key = cv2.waitKey(10)
+    key = cv2.waitKey(1)
     if (key == 27):
         break
 
