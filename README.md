@@ -465,9 +465,19 @@ opencv学习路径
           + 只能使用DNN，不能训练DNN模型
           + 支持Tensflow/Pytorch/Caff/DarkNet
             + 读取模型，并得到深度神经网络
+              + readNetFromTensflow(model,config)
+              + readNetFromCaffe(config,model)
+              + readNetDarknet(config,model),YOLO
+              + readNet(model,[config,[framework]])
             + 读取图片/视频
             + 将图片转成张量，送入深度神经网络
               + blobFromImage 函数
+                + image 
+                + scalefactor = 1.0 缩放因子
+                + size = Size()
+                + mean = Scalar()
+                + swapRB = false
+                + crop = false 
             + 进行分析，并得到结果 
     + 车牌识别
       + Haar + Tesacct 识别车牌
