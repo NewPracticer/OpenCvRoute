@@ -28,6 +28,20 @@ opencv学习路径
   + imwrite(name,img)
   + name 要保存的文件名
   + img, 是Mat的类型
++ 图像的阈值
+  + cv2.threshold
+    + src：输入图，只能输入单通道图像，通常来说为灰度图
+    + dst: 输出图
+    + thresh: 阈值
+    + maxval: 当像素值超过了阈值(或者小于阈值，根据type来决定)，所赋予的值
+    + type: 二值化操作的类型，包含以下5种类型
+      + cv2.THRESH_BINARY: 超过阈值部分去maxval，否则取0
+      + cv2.THRESH_BINARY_INV：THRESH_BINARY的反转
+      + cv2.THRESH_TRUNCN 大于阈值部分设置为阈值，否则不变
+      + cv2.THRESH_TOZERO 大于阈值部分不改变，否则设为0
+      + cv2.THRESH_TOZERO_INV：THRESH_TOZERO的反转
++ 图像的平滑
+  + 
 + 视频采集
   + VidwoCapure() 视频采集
   + cap.read() 读取视频
@@ -211,6 +225,9 @@ opencv学习路径
       + boxFilter(src,depth,ksize,anchor,normalize,borderType)
     + 均值滤波
       + blur(src,ksize,anchor,borderType)  
+  + 图像金字塔
+    +  高斯金字塔
+    +  拉普拉斯金字塔
   + 高斯滤波。对高斯噪点有效果
     + GasussianBlur(img,kernal,sigmaX,sigmaY)
   + 中值滤波。取其中的中间值作为卷积后的结果值。对胡椒噪音效果明显
@@ -305,12 +322,12 @@ opencv学习路径
       + 两个返回值，contours和hierarchy
       + mode
         + RETR_EXTERNAL = 0 表示只检测外轮廓
-        + RETR_LIST = 1 ,检测的轮廓不建立等级关系
-        + RETR_CCOMP = 2 ,每层最多两级
-        + RETR_TREE = 3，按树形存储轮廓
+        + RETR_LIST = 1 ,检测的轮廓不建立等级关系。检索所有的轮廓，并将其保存到一条链表当中
+        + RETR_CCOMP = 2 ,每层最多两级。检索所有轮廓，并将它们组织为两层。顶层是个部分的外部边界，第二层是空洞的边界
+        + RETR_TREE = 3，按树形存储轮廓。检索所有的轮廓，并重构嵌套轮廓的整个层次
       + ApproxinmationMode
-        + CHAIN_APPROX_NONE, 保存所有轮廓上的点
-        + CHAIN_APPROX_SIMPLE，只保存角点
+        + CHAIN_APPROX_NONE, 保存所有轮廓上的点。以Freeman链码的方式输出轮廓，所有其他方法输出多边形
+        + CHAIN_APPROX_SIMPLE，只保存角点。压缩水平的、垂直的和斜的部分，也就是函数只保留他们的终点部分 
   + 绘制轮廓
     + drawContours(img,contours,contourIndex,color,thickness...)
       + coutourIdx, -1 表示绘制所有轮廓
@@ -345,8 +362,28 @@ opencv学习路径
       + boundingRect(array)
         + array:轮廓
         + 返回 rect
+  + 直方图
+    + cv2.calchist(images,channels,mask,histSize,range)
+      + images:原图像格式为uint8或float32。当传入函数时应用中括号来例如[img]
+      + channesl: 同样用中括号括来它会告函数我们统幅图像的直方图。如果入图像是灰度图它的值就是[0],如果是彩色图像的传入的参数可以是[0][1][2]
+      + mask:掩模图像。整幅图像的直方图就把它称为None.但是如果你想统一图像某一分的直方图的你就制作一个掩模图像并使用它
+      + histSize: Bin的数组。也应用中括号括出来 
+      + ranges: 像素值范围为[0,256]
+  + 傅立叶变换
+    + 在频域中一切都是静止的 
+    + 高频：变化剧烈的灰度分量，例如边界
+    + 低频： 变化缓慢的灰度分量，例如一片大海
+     
 + Opencv特征的场景
   + 图像搜索，如以图搜图
+  + 模板匹配
+    + 模板匹配与卷积原理相似，模板在原图像上从原点开始滑动，计算模板与图像被模板覆盖的地方的差别程度，这个差别程度的计算方法在opnecv里面有6种，然后将每次计算的结果放入一个矩阵里，作为结果输出。加入原图形是个AXB的大小，而模板是a*b大小，则输出结果是（A-a+1）*(B-b+1)
+    + TM_SQDIFF:计算平方不同，计算出来的值越小，越相关
+    + TM_CCORR：计算相关性，计算出来的值越大，越相关
+    + TM_CCOEFF：计算相关系数，计算出来的值越大，越相关
+    + TM_SQDIFF_NORMED:计算归一化平方不同，计算出来的值越接近0，越相关
+    + TM_CCORR_NORMED：计算归一化相关性，计算出来的值越接近1，越相关
+    + TM_CCOEFF_NORME: 计算归一化相关系数，计算出来的值越接近1，越相关
   + 拼图游戏
     + 拼图方法
       + 寻找特征

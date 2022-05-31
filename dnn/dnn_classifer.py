@@ -14,8 +14,8 @@ model = "E:\gitproject\OpenCvRoute\\dnn\model\\bvlc_googlenet.caffemodel"
 net = dnn.readNetFromCaffe(config,model)
 
 # 读取图片，转成张量
-img = cv2.imread('./dog.jpg')
-# img = cv2.imread('./haarcars.png')
+# img = cv2.imread('./dog.jpg')
+img = cv2.imread('./haarcars.png')
 # img = cv2.imread('./smallcat.jpeg')
 blob = dnn.blobFromImage(img,1.0,(224,224),(104,117,123))
 

@@ -22,7 +22,7 @@ gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 #二值化
 ret, binary = cv2.threshold(gray,150,255,cv2.THRESH_BINARY)
 
-countours,hiearchy = cv2.findContours(binary,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+binary,countours,hiearchy = cv2.findContours(binary,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
 # 绘制轮廓
 # cv2.drawContours(img,countours,-1,(0,255,0),1)
