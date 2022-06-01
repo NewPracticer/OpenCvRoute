@@ -30,10 +30,10 @@ def cv_show(name,img):
 # 读取一个模板图像
 img = cv2.imread('./images/ocr_a_reference.png')
 cv_show('img',img)
-# 灰度图
+# 灰度图 将图片从一个色彩空间转换成另外一个色彩空间
 ref = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 cv_show('ref',ref)
-# 二值图像
+# 二值图像 区分前景和背景
 ref = cv2.threshold(ref, 10, 255, cv2.THRESH_BINARY_INV)[1]
 cv_show('ref',ref)
 
@@ -50,6 +50,9 @@ refCnts = utilmy.sort_contours(refCnts, method="left-to-right")[0] #排序，从
 digits = {}
 
 # 遍历每一个轮廓
+# i 对应序号
+# c对应序号
+# 使用roi 把特定区域抠出来
 for (i, c) in enumerate(refCnts):
 	# 计算外接矩形并且resize成合适大小
 	(x, y, w, h) = cv2.boundingRect(c)
@@ -70,10 +73,10 @@ image = utilmy.resize(image, width=300)
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 cv_show('gray',gray)
 
-#礼帽操作，突出更明亮的区域
+#顶帽操作，突出更明亮的区域
 tophat = cv2.morphologyEx(gray, cv2.MORPH_TOPHAT, rectKernel)
 cv_show('tophat',tophat)
-#
+# 索菲尔算子
 gradX = cv2.Sobel(tophat, ddepth=cv2.CV_32F, dx=1, dy=0, #ksize=-1相当于用3*3的
 	ksize=-1)
 
@@ -92,10 +95,9 @@ cv_show('gradX',gradX)
 #THRESH_OTSU会自动寻找合适的阈值，适合双峰，需把阈值参数设置为0
 thresh = cv2.threshold(gradX, 0, 255,
 	cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-cv_show('thresh',thresh)
+cv_show('thresh_card',thresh)
 
 #再来一个闭操作
-
 thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, sqKernel) #再来一个闭操作
 cv_show('thresh',thresh)
 
