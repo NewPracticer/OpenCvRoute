@@ -30,6 +30,8 @@ def order_points(pts):
 
 	return rect
 
+# 透视变换
+# 将获取的轮廓的四个点，作为新图片的四个点
 def four_point_transform(image, pts):
 	# 获取输入坐标点
 	rect = order_points(pts)
@@ -57,6 +59,8 @@ def four_point_transform(image, pts):
 
 	# 返回变换后结果
 	return warped
+# 排序
+# 从上到下排序
 def sort_contours(cnts, method="left-to-right"):
     reverse = False
     i = 0
@@ -68,6 +72,7 @@ def sort_contours(cnts, method="left-to-right"):
     (cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes),
                                         key=lambda b: b[1][i], reverse=reverse))
     return cnts, boundingBoxes
+
 def cv_show(name,img):
         cv2.imshow(name, img)
         cv2.waitKey(0)
@@ -114,6 +119,7 @@ if len(cnts) > 0:
 warped = four_point_transform(gray, docCnt.reshape(4, 2))
 cv_show('warped',warped)
 # Otsu's 阈值处理
+# 使用自适应阈值
 thresh = cv2.threshold(warped, 0, 255,
 	cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1] 
 cv_show('thresh',thresh)
@@ -132,10 +138,12 @@ for c in cnts:
 	ar = w / float(h)
 
 	# 根据实际情况指定标准
+	# 因为图片无法保证 宽高比为1 ，所以设置在0.9-1.1之间，保留下来
 	if w >= 20 and h >= 20 and ar >= 0.9 and ar <= 1.1:
 		questionCnts.append(c)
 
 # 按照从上到下进行排序
+# 对检测到的轮廓进行排序
 questionCnts = sort_contours(questionCnts,
 	method="top-to-bottom")[0]
 correct = 0
@@ -143,21 +151,24 @@ correct = 0
 # 每排有5个选项
 for (q, i) in enumerate(np.arange(0, len(questionCnts), 5)):
 	# 排序
+	# 当前的五个结果
 	cnts = sort_contours(questionCnts[i:i + 5])[0]
 	bubbled = None
 
-	# 遍历每一个结果
+	# 遍历同一排每一个结果
 	for (j, c) in enumerate(cnts):
-		# 使用mask来判断结果
+		# 使用mask来判断结果，使用掩码
 		mask = np.zeros(thresh.shape, dtype="uint8")
 		cv2.drawContours(mask, [c], -1, 255, -1) #-1表示填充
 		cv_show('mask',mask)
 		# 通过计算非零点数量来算是否选择这个答案
+		# 使用掩码的与操作
 		mask = cv2.bitwise_and(thresh, thresh, mask=mask)
 		total = cv2.countNonZero(mask)
 
 		# 通过阈值判断
 		if bubbled is None or total > bubbled[0]:
+			# 不断对相邻的两个圆圈比对，保存最大的值
 			bubbled = (total, j)
 
 	# 对比正确答案
